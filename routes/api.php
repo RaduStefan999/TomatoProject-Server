@@ -15,3 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', 'AuthenticationController@login');
+Route::get('/products', 'DataController@products') -> middleware('apiAuth');
