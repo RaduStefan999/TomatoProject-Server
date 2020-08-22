@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Token;
 use Closure;
 
 class apiAuth
@@ -15,7 +16,7 @@ class apiAuth
      */
     public function handle($request, Closure $next)
     {
-        if ($request->token == "tomato_super_secret") {
+        if (Token::where('token', '=', $request->token)->first() != null) {
             return $next($request);
         }
         else {

@@ -54,6 +54,33 @@ class AuthenticationController extends Controller
         return response()->json($response);
     }
 
+    function logout (Request $request) {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|string|max:255'
+        ]);
+
+        $response = (object)array();
+        $response -> success = false;
+
+        if ($validator -> fails()) {
+            $response -> errors = $validator -> messages();
+            return response()->json($response);
+        }
+
+        $token = Token::where('token', '=', $request->token)->first();
+
+        if ($token == null) {
+            $response -> expiredToken = true;
+            return response()->json($response);
+        }
+
+        $token->delete();
+
+        $response -> success = true;
+
+        return response()->json($response);
+    }
+
     function register (Request $request) {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255',
@@ -90,9 +117,5 @@ class AuthenticationController extends Controller
         $response -> token = $token->token;
 
         return response()->json($response);
-    }
-
-    function logout (Request $request) {
-        
     }
 }
